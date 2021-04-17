@@ -30,9 +30,12 @@
             <form action="{{url_for('insert')}}" method="POST" >
                     <div class="input-group mb-3">
                         <span class="input-group-text" id="task-form-display">Task</span>
-                        <input type="text" class="form-control" name="addTask" placeholder="Description of task" aria-label="task-name" aria-describedby="basic-addon1">
-                        <input id="input_date" name="date_input" type="date"/>
-                        <button type="submit" class="btn btn-outline-info btn-sm" onclick="insert()"  data-toggle="modal" >Add Task</button>
+                        
+                        <input type="text" class="form-control" size="10"  name="addTask"  placeholder="Description of task" aria-label="task-name" aria-describedby="basic-addon1">
+                            <input id="input_date" name="date_input" type="date"/>
+                        <button type="submit" class="btn btn-outline-info btn-sm" onclick="insert()"  data-toggle="modal" >
+                            <i class="fas  fa-tasks fa-lg fa-fw"></i>  &nbsp; Add Task 
+                        </button>
                     </div>
             </form>
         </div>
@@ -57,7 +60,9 @@
                             <td>
                                 <form action="{{url_for('delete')}}" method="POST">
                                     <button class="btn btn-outline-secondary btn-sm remove" name="remove" value="{{item.list}}" data-source="{{item.list}}" type="submit">
-                                        <i class="fa fa-trash fa-1" aria-hidden="true"></i>
+                                        <span style=" color: rgb(166, 213, 240);">
+                                            <i class="fa fa-trash fa-1 fa-spin " aria-hidden="true"></i>
+                                        </span>
                                     </button>
                                 </form>
                             </td>
