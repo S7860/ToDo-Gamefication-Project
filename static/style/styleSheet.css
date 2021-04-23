@@ -1,0 +1,255 @@
+@import url(https://fonts.googleapis.com/css?family=Expletus+Sans);
+
+/* Basic resets */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 50px auto 0;
+  max-width: 800px;
+
+  font-family: "Expletus Sans", sans-serif;
+}
+.center {
+  text-align: center;
+}
+
+#task_button {
+  border-radius: 0 100em 100em 0;
+  /* z-index: -1; */
+}
+
+#task-form-display {
+  border-radius: 100em 0 0 100em;
+}
+/* Cog that sumbits the progress bar buttom Css */
+#add_task {
+  width: 35px;
+  height: 27px;
+  /* z-index: -1; */
+}
+#myProgress {
+  width: 73%;
+  height: 27px;
+  border-radius: 0 100em 100em 0;
+  background-color: rgb(142, 153, 163);
+}
+/* This makes the bar color full to show progress */
+#myBar {
+  width: 0%;
+  height: 27px;
+  border-radius: 0 100em 100em 0;
+  box-shadow: -3px 18px 20px 0px rgb(255, 192, 204);
+
+  color: white;
+  text-align: center;
+  font-size: 20px;
+  font-family: "Segoe UI";
+  animation-direction: reverse;
+  background: #e5405e;
+  /* Old browsers */
+  background: -moz-linear-gradient(
+    left,
+    #e5405e 0%,
+    #ffdb3a 25%,
+    #3fffa2 50%,
+    #3fffa2 50%,
+    #1a9be0 73%,
+    #ba68ed 100%
+  );
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(
+    left,
+    #e5405e 0%,
+    #ffdb3a 25%,
+    #3fffa2 50%,
+    #3fffa2 50%,
+    #1a9be0 73%,
+    #ba68ed 100%
+  );
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(
+    to right,
+    #e5405e 0%,
+    #ffdb3a 25%,
+    #3fffa2 50%,
+    #3fffa2 50%,
+    #1a9be0 73%,
+    #ba68ed 100%
+  );
+}
+/* This ruonds the trash icon */
+i.fa {
+  display: inline-block;
+  border-radius: 60px;
+  box-shadow: 0px 0px 2px #888;
+  padding: 0.5em 0.6em;
+}
+
+/* 
+This was confusing me for some time until I discovered the line was neither 
+a border or an outline, 
+it was a shadow. So to remove it from all the buttons and input filds I had to use this:
+ */
+input:focus,
+input.form-control:focus,
+#task_remove,
+#task_button,
+#add_task {
+  outline: none !important;
+  outline-width: 0 !important;
+  box-shadow: none;
+  -moz-box-shadow: none;
+  -webkit-box-shadow: none;
+}
+/* This begins the pop for the bell icon CSS */
+/* moves the bell icon to the right */
+.notification {
+  /* top: -50px; */
+  float: right;
+}
+#myBtn {
+  float: right;
+  background-color: transparent;
+  border: none;
+}
+.modal {
+  display: none; /* Hidden by default */
+  position: absolute; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  padding-top: 300px; /* Location of the box */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0); /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+  text-align: center;
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 25%;
+}
+
+/* The Close Button */
+.close {
+  color: #aaaaaa;
+  float: right;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+/* Ends the Notification CSS pop */
+
+/* Starts the CSS for the random pop for the images  */
+#popUp {
+  /* position: fixed; */
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  height: 200px;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+#message {
+  /* background: red;
+  width: 100px;
+  height: 50px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+#popup {
+  display: none;
+  position: absolute;
+  margin: 0 auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0px 0px 50px 2px #000;
+  z-index: 1;
+}
+/* Places the progress bar button in background before pop so wouldnt show up in front of image*/
+#message::before,
+#add_task {
+  z-index: -1;
+}
+/* Places the progress bar button in  front pop so this makes the button still clickable */
+#message::after,
+#add_task {
+  z-index: 1;
+}
+/* Places the task sumbit button in background before pop so wouldnt show up in front of image*/
+#message::before,
+#task_button {
+  z-index: -1;
+}
+/* Places the task sumbit bar button in  front pop so this makes the button still clickable */
+#message::after,
+#task_button {
+  z-index: 1;
+}
+.panel::after,
+#imagesClose {
+  position: relative;
+  float: left;
+  /* top: 10px; */
+  /* margin-top: 30px; */
+}
+
+.close-icon {
+  vertical-align: middle;
+  border: none;
+  color: inherit;
+  border-radius: 80%;
+  background: transparent;
+  position: relative;
+  width: 28px;
+  height: 28px;
+  opacity: 0.6;
+}
+.close-icon:focus,
+.close-icon:hover {
+  opacity: 1;
+  background: rgba(128, 128, 128, 0.5);
+}
+.close-icon:active {
+  background: rgba(128, 128, 128, 0.9);
+}
+/* tines of the X */
+.close-icon::before,
+.close-icon::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 15px;
+  width: 4px;
+  background-color: currentColor;
+}
+.close-icon::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.close-icon::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}

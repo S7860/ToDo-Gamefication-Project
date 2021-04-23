@@ -1,9 +1,12 @@
-import pyrebase
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
-import pdb
-import collections
-# importing the firebase auth cridentials
 from firebase import firebaseConfig as firebaseConfig
+import pyrebase  # inisilizing the firebase
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+import collections  # for creating a dictionary
+import pdb  # debugging
+from smsNotification import client
+import time
+
+# importing the firebase auth cridentials
 
 app = Flask(__name__)
 
@@ -14,23 +17,55 @@ auth = firebase.auth()
 db = firebase.database()
 
 
-# This creates a dictionary of the inerted items via input
-def convert(data):
-    if isinstance(data, basestring):
-        return str(data)
-    elif isinstance(data, collections.Mapping):
-        return dict(map(convert, data.iteritems()))
-    elif isinstance(data, collections.Iterable):
-        return type(data)(map(convert, data))
-    else:
-        return data
+def database():
+    ref = db.child("ToDo").get()
+    values = ref.val()
+    listing = convert(values)
+    return listing
+
+
+@app.route("/sms", methods=['POST'])
+def sms():
+    if request.method == 'POST':
+        tel = request.form['phone']
+        # progress_bar = request.form['number']
+
+        task_list = database()
+        items = task_list.values()
+
+        # pdb.set_trace()
+
+        # if tel.encode("utf-8"):
+        #     time.sleep(3600)
+        #     client.messages.create(from_="+15623726595",
+        #                            body="Don't want to miss out on the Fun!!...Please Continue to Do Your Tasks ",
+        #                            to=tel)
+
+        #     return redirect(url_for('homePage'))
+
+    # Keeps sending message at 30 min,  1 hour, then 2 hours later...
+    # Check if task for that day is all completed before sending the 4th sms message.
+
+
+@app.route("/change_progress", methods=['POST'])
+def change_progress():
+    try:
+        if request.method == 'POST':
+            progress = request.form['number']
+
+            # pdb.set_trace()
+            print("progress rate", progress)
+
+            return redirect(url_for('homePage'))
+    except Exception as e:
+        flash(e)
+        return render_template('todo.html')
 
 
 @app.route("/delete", methods=['POST'])
 def delete():
     try:
         name = request.form['remove']
-        # name = request.form.get['remove']
         # pdb.set_trace()
 
         if request.method == 'POST':
@@ -72,15 +107,30 @@ def insert():
 
 @app.route("/")
 def homePage():
-    ref = db.child("ToDo").get()
-    values = ref.val()
-    listing = convert(values)
-
-    items = listing.keys()
-    list_val = listing.values()
+    # ref = db.child("ToDo").get()
+    # values = ref.val()
+    # listing = convert(values)
+    todo = database()
+    # items = listing.keys()
+    list_val = todo.values()
     # pdb.set_trace()
+
     return render_template('todo.html', list_val=list_val)
+
+# This creates a dictionary of the inerted items via input
+
+
+def convert(data):
+    if isinstance(data, basestring):
+        return str(data)
+    elif isinstance(data, collections.Mapping):
+        return dict(map(convert, data.iteritems()))
+    elif isinstance(data, collections.Iterable):
+        return type(data)(map(convert, data))
+    else:
+        return data
 
 
 if __name__ == '__main__':
+
     app.run(debug=True)

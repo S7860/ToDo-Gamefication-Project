@@ -7,74 +7,169 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <!-- <link rel="icon" href="{{ url_for('static', filename='img/cs.ico') }}"> -->
+        <!-- Begins here ALL the Imported Libraries  -->
+
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" 
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-
+        <!-- Font awesome icon  -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.css">
-        <!-- <link rel="stylesheet" href="{{ url_for('static', filename='styles/custom.css') }}"> -->
-        
         <!-- The following link is for jQury which allow the website to click and function using a mouse-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"> </script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/js/regular.min.js"
+        />
+        <!-- ENDs all the libraries import -->
+        <!-- All imports from the local forlders by me -->
+        <link rel="stylesheet" type="text/css" href='./static/style/styleSheet.css'>
+        <!--load progress bar status  -->
+        <script src="../static/JS/progressBar.js"></script> 
+        <script src="../static/JS/notificationPopUp.js"></script>
+        <!-- This is for Image popup and time delays  -->
+        <script src="../static/JS/imagePopup.js"></script>
+        <script src="../static/JS/imagesRandmizer.js"></script>
+
+        <!-- ENDs all the local imports -->
     </head>
 
-    <body>
-
+    <!-- onload triggers the script once the web page is loaded  -->
+    <body onload="imagePopUp();">
+    
+        
+       
+        <!-- Creating a notifictaion bell that takes phone number as innput -->
+        <button id="myBtn" onclick="bellPopup()"> 
+            <i class='fa fa-bell notification' aria-hidden="true"></i>
+        </button>
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+                <form action="{{url_for('sms')}}" method="POST" >
+                    <span class="close">&times;</span>
+                    <div class="input-group mb-4">
+                        <span class="input-group-text" id="task-form-display">
+                    <i class="fas fa-sms fa-lg" aria-hidden="true"></i>  
+                    </span>
+                    <input style="width:300px; height: 30px; text-align: center;" type="tel" name="phone" id="phone" placeholder="Phone Number to Recieve Alerts" pattern="[0-9]{3}[0-9]{3}[0-9]{4}" required>
+                </div>
+                </form>
+            </div>
+        </div>
+            
+        <!-- creates a header. -->
         <main role="main" class="container extra-bottom">
-        <h1 class="mt-5">TODO List</h1>
-        <p><mark>Do it now.</mark></p>
+            <h1 class="mt-5">TODO List</h1>
+            <p><mark>Do it now.</mark></p>
         </main>
         
-
+        <!-- Takes in the tasks and sends it to python -->
         <div class="container">
             <form action="{{url_for('insert')}}" method="POST" >
-                    <div class="input-group mb-3">
+                    <div class="input-group mb-4">
                         <span class="input-group-text" id="task-form-display">Task</span>
                         
                         <input type="text" class="form-control" size="10"  name="addTask"  placeholder="Description of task" aria-label="task-name" aria-describedby="basic-addon1">
-                            <input id="input_date" name="date_input" type="date"/>
-                        <button type="submit" class="btn btn-outline-info btn-sm" onclick="insert()"  data-toggle="modal" >
-                            <i class="fas  fa-tasks fa-lg fa-fw"></i>  &nbsp; Add Task 
+                            <input id="input_date" name="date_input" class='center' type="date"/>
+                        <button type="submit" class="btn btn-outline-info btn-sm" onclick="insert()" id="task_button" data-toggle="modal" >
+                            <i class="fas  fa-tasks fa-lg " aria-hidden="true"></i> &nbsp; Add Task 
                         </button>
                     </div>
             </form>
         </div>
-    
-        <div class="container table-responsive">          
+        <!-- Stops here for taking in the task field -->
+        
+        <div class="container table-responsive">   
+            <!-- Progress bar  -->
+            <form action="{{url_for('change_progress')}}" method="POST">
+            <div class="input-group mb-4">
+                <span class="input-group-text" id="task-form-display" style="height: 27px;">Task Progress</span>
+                <input style="width:50px; height: 27px;" type="text" class="form-control" name = "number" id="number" min="0" max="100" required>
+                    <button type="button" class="btn btn-outline-info btn-sm" id="add_task"  name = "number"  onclick="change_progress()" >
+                        <i class="fas fa-cog  fa-spin"></i>
+                    </button>
+                    <div id="myProgress" >
+                        <div id="myBar" > &nbsp;&nbsp;&nbsp;0%</div>
+                    </div>
+                </div>
+            </form>
+            <!-- Ends for progress bar -->
+
+            <!-- Disaplys the dictionary content from the backed end to the front end  -->
             <table class="table">
                 <thead>
-                <tr>
-                    <th class="task">Task Name</th>
-                    <th class="task">DUE</th>
-                    <th class="update">Remove</th>
-                </tr>
+                    <tr>
+                        <th class="task">Task Name</th>
+                        <th class="task">DUE</th>
+                        <th class="update">Remove</th>
+                    </tr>
                 </thead>
-        
                 <tbody>
                     {% for item in list_val%}
-                        <tr>
-                            <td>{{item.list}}</td>
-                            <td>{{item.due}}</td>
-
-                            <!-- this is the button to remove the item  -->
-                            <td>
-                                <form action="{{url_for('delete')}}" method="POST">
-                                    <button class="btn btn-outline-secondary btn-sm remove" name="remove" value="{{item.list}}" data-source="{{item.list}}" type="submit">
-                                        <span style=" color: rgb(166, 213, 240);">
-                                            <i class="fa fa-trash fa-1 fa-spin " aria-hidden="true"></i>
-                                        </span>
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                {% endfor %}
+                    <tr>
+                        <td>{{item.list}}</td>
+                        <td>{{item.due}}</td>
+                        
+                        
+                        
+                        <!-- this is the button to remove the item  -->
+                        <td>
+                            <form action="{{url_for('delete')}}" method="POST" >
+                                <button id="task_remove" class="btn btn-sm remove" name="remove" value="{{item.list}}" data-source="{{item.list}}" type="submit">
+                                    <span style=" color: rgb(166, 213, 240);" >
+                                        <i class="fa fa-trash " aria-hidden="true" ></i>
+                                    </span>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
                 </tbody>
+                
+
+                
+                <div id="popup" class="popup panel panel-primary" >
+                    <!-- Now this is the button which closes the popup-->
+                    <div class="panel-footer">
+                        <!-- <span class="close">&times;</span> -->
+                        <button id="close" class="close-icon" style="background: black;color: white;padding: 5px;"></button>
+                    </div>
+                    <!-- and here comes the image -->
+                    <!-- this imag calls the js functaion and that is where all the images are stored -->
+                    <img id="bannerImage" alt="popup">
+                        
+                        
+                        <!-- and finally we close the POPUP FRAME-->
+                        <!-- everything on it will show up within the popup so you can add more things not just an image -->
+                </div>
+
+               
+
             </table>
         </div>
   </body>
-  
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" 
-      integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+  <script>
+    // This randomized the images at it shows up
+    var images = [  "../static/images/hiking.jpeg",
+                    "../static/images/playing-game.png",
+                    "../static/images/monekyEscape.jpeg",
+                    "../static/images/expert.jpeg",
+                ];
+    var i = 0;
+    var renew = setInterval(function(){
+        if(images.length == i){
+            i = 0;
+        }
+        else {
+        document.getElementById("bannerImage").src = images[i]; 
+        i++;
+
+    }
+    },6000);
+    </script>
+
 
 </html>
